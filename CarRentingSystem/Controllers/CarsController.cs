@@ -8,6 +8,8 @@ namespace CarRentingSystem.Controllers
     using CarRentingSystem.Data.Models;
     using CarRentingSystem.Models.Cars;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Http;
+    using System;
 
     public class CarsController : Controller
     {
@@ -21,9 +23,48 @@ namespace CarRentingSystem.Controllers
             Categories = this.GetCarCategories(),
         });
 
-        [HttpPost]
-        public IActionResult Add(AddCarFormModel car)
+        public IActionResult All(string searchTerm)
         {
+            var carsQuery = this.data.Cars.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                carsQuery = carsQuery
+                    .Where(c => (c.Brand + " " + c.Model).ToLower().Contains(searchTerm.ToLower())
+                || c.Description.ToLower().Contains(searchTerm.ToLower()));
+            }
+
+            var cars = carsQuery
+                .OrderByDescending(c => c.Id)
+                .Select(c => new CarListingViewModel
+                {
+                    Id = c.Id,
+                    Brand = c.Brand,
+                    Model = c.Model,
+                    ImageUrl = c.ImageUrl,
+                    Year = c.Year,
+                    Category = c.Category.Name
+                })
+                .ToList();
+
+            var carBrands = this.data
+                .Cars
+                .Select(c => c.Brand)
+                .Distinct()
+                .ToList();
+
+            return this.View(new AllCarsQueryModel
+            {
+                Brands = carBrands,
+                Cars = cars,
+                SearchTerm = searchTerm,
+            });
+        }
+
+        [HttpPost]
+        public IActionResult Add(AddCarFormModel car, IFormFile image)
+        {
+
             if (!this.data.Categories.Any(c => c.Id == car.CategoryId))
             {
                 this.ModelState.AddModelError(nameof(car.CategoryId), "Category does not exist.");
@@ -49,7 +90,7 @@ namespace CarRentingSystem.Controllers
             this.data.Cars.Add(carData);
             this.data.SaveChanges();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(All));
         }
 
         private IEnumerable<CarCategryViewModel> GetCarCategories()
