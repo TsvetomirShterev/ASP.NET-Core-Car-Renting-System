@@ -30,7 +30,9 @@ namespace CarRentingSystem.Data
 
         public class Dealer
         {
+            public const int NameMinLength = 2;
             public const int NameMaxLength = 25;
+            public const int PhoneMinLength = 6;
             public const int PhoneMaxLength = 20;
         }
     }

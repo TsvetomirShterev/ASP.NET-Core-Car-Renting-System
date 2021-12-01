@@ -1,5 +1,4 @@
-﻿
-namespace CarRentingSystem.Controllers
+﻿namespace CarRentingSystem.Controllers
 {
     using System.Linq;
     using System.Collections.Generic;
@@ -9,6 +8,9 @@ namespace CarRentingSystem.Controllers
     using CarRentingSystem.Models.Cars;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Authorization;
+    using CarRentingSystem.Infrastructure;
+
     public class CarsController : Controller
     {
         private readonly CarRentingDbContext data;
@@ -74,14 +76,35 @@ namespace CarRentingSystem.Controllers
             return this.View(query);
         }
 
-        public IActionResult Add() => View(new AddCarFormModel
+        [Authorize]
+        public IActionResult Add()
         {
-            Categories = this.GetCarCategories(),
-        });
+            if (!this.UserIsDealer())
+            {
+                return RedirectToAction(nameof(DealersController.Become), "Dealers");
+            }
+
+            return View(new AddCarFormModel
+            {
+                Categories = this.GetCarCategories(),
+            });
+        }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Add(AddCarFormModel car, IFormFile image)
         {
+            var dealerId = this.data
+                .Dealers
+                .Where(d => d.UserId == this.User.GetId())
+                .Select(d => d.Id)
+                .FirstOrDefault();
+
+            if (dealerId == 0)
+            {
+                return RedirectToAction(nameof(DealersController.Become), "Dealers");
+            }
+
 
             if (!this.data.Categories.Any(c => c.Id == car.CategoryId))
             {
@@ -103,6 +126,7 @@ namespace CarRentingSystem.Controllers
                 ImageUrl = car.ImageUrl,
                 Year = car.Year,
                 CategoryId = car.CategoryId,
+                DealerId = dealerId,
             };
 
             this.data.Cars.Add(carData);
@@ -110,6 +134,11 @@ namespace CarRentingSystem.Controllers
 
             return RedirectToAction(nameof(All));
         }
+
+        private bool UserIsDealer()
+            => this.data
+                .Dealers
+                .Any(d => d.UserId == this.User.GetId());
 
         private IEnumerable<CarCategryViewModel> GetCarCategories()
             => this.data
