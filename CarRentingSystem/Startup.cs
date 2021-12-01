@@ -2,6 +2,8 @@ namespace CarRentingSystem
 {
     using CarRentingSystem.Data;
     using CarRentingSystem.Infrastructure;
+    using CarRentingSystem.Services.Cars;
+    using CarRentingSystem.Services.Statistics;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
@@ -38,8 +40,10 @@ namespace CarRentingSystem
                 })
                 .AddEntityFrameworkStores<CarRentingDbContext>();
 
-            services
-                .AddControllersWithViews();
+            services.AddControllersWithViews();
+
+            services.AddTransient<IStatisticsService, StatisticsService>();
+            services.AddTransient<ICarService, CarService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,6 +63,8 @@ namespace CarRentingSystem
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+
             app.UseHttpsRedirection()
                .UseStaticFiles()
                .UseRouting()
@@ -69,6 +75,6 @@ namespace CarRentingSystem
                    endpoints.MapDefaultControllerRoute();
                    endpoints.MapRazorPages();
                });
-        }      
+        }
     }
 }
