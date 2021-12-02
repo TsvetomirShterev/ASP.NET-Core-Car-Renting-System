@@ -13,7 +13,7 @@ namespace CarRentingSystem
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-
+    
 
     public class Startup
     {
@@ -42,6 +42,8 @@ namespace CarRentingSystem
                 })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<CarRentingDbContext>();
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllersWithViews();
 
@@ -76,10 +78,7 @@ namespace CarRentingSystem
                .UseAuthorization()
                .UseEndpoints(endpoints =>
                {
-                   endpoints.MapControllerRoute(
-                       name: "Areas",
-                       pattern: "/{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
+                   endpoints.MapDefaultAreaRoute();
                    endpoints.MapDefaultControllerRoute();
                    endpoints.MapRazorPages();
                });
