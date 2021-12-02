@@ -9,7 +9,9 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using static WebConstants;
+
+    using static CarRentingSystem.Areas.Admin.AdminConstants;
+
     public static class ApplicationBuilderExtentions
     {
         public static IApplicationBuilder PrepareDatabase(this IApplicationBuilder app)
