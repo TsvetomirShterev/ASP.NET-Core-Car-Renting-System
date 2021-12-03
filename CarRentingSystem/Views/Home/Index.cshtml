@@ -1,11 +1,11 @@
-﻿@model IndexViewModel
+﻿@model List<LatestCarsServiceModel>
 
 @{
     ViewBag.Title = "Welcome!";
 }
 
 @{
-    var cars = Model.Cars;
+    var cars = Model;
 
     var firstCar = cars.Any() ? cars[0] : null;
 

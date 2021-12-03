@@ -3,7 +3,6 @@
     using System.Linq;
     using CarRentingSystem.Controllers;
     using CarRentingSystem.Data.Models;
-    using CarRentingSystem.Models.Home;
     using CarRentingSystem.Services.Cars;
     using CarRentingSystem.Services.Statistics;
     using CarRentingSystem.Test.Mocks;
