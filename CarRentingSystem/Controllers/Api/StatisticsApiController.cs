@@ -5,11 +5,11 @@
 
     [Route("api/statistics")]
     [ApiController]
-    public class StatisticsController : ControllerBase
+    public class StatisticsApiController : ControllerBase
     {
         private readonly IStatisticsService statistics;
 
-        public StatisticsController(IStatisticsService statistics) 
+        public StatisticsApiController(IStatisticsService statistics) 
             => this.statistics = statistics;
 
         [HttpGet]

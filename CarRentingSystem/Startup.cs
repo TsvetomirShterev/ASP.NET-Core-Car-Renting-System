@@ -9,11 +9,12 @@ namespace CarRentingSystem
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    
+
 
     public class Startup
     {
@@ -45,7 +46,11 @@ namespace CarRentingSystem
 
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+            });
+
 
             services.AddTransient<IStatisticsService, StatisticsService>();
             services.AddTransient<IDealerService, DealerService>();

@@ -13,6 +13,9 @@
             int currentPage,
             int carsPerPage);
 
+
+        IEnumerable<LatestCarsServiceModel> Latest();
+
         CarDetailsServiceModel Details(int carId);
 
         int Create(

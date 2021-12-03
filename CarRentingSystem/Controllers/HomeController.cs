@@ -1,41 +1,27 @@
 ﻿namespace CarRentingSystem.Controllers
 {
-    using System.Linq;
-    using System.Diagnostics;
-
     using Microsoft.AspNetCore.Mvc;
-    using CarRentingSystem.Data;
-    using CarRentingSystem.Models;
     using CarRentingSystem.Models.Home;
     using CarRentingSystem.Services.Statistics;
     using AutoMapper;
-    using AutoMapper.QueryableExtensions;
+    using CarRentingSystem.Services.Cars;
+    using System.Linq;
 
     public class HomeController : Controller
     {
+        private readonly ICarService cars;
         private readonly IStatisticsService statistics;
-        private readonly IConfigurationProvider mapper;
-        private readonly CarRentingDbContext data;
 
-        public HomeController(
-            IStatisticsService statistics,
-            IMapper mapper, 
-            CarRentingDbContext data)
+        public HomeController( ICarService cars, IStatisticsService statistics)
         {
+            this.cars = cars;
             this.statistics = statistics;
-            this.mapper = mapper.ConfigurationProvider;
-            this.data = data;
         }
 
         public IActionResult Index()
         {
 
-            var cars = this.data
-                .Cars
-                .OrderByDescending(c => c.Id)
-                .ProjectTo<CarIndexViewModel>(this.mapper)
-                .Take(3)
-                .ToList();
+            var latestCars = this.cars.Latest().ToList();
 
             var statistics = this.statistics.Total();
 
@@ -43,12 +29,11 @@
             {
                 TotalUsers = statistics.TotalUsers,
                 TotalCars = statistics.TotalCars,
-                Cars = cars,
+                Cars = latestCars,
             });
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
-            => View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            => View();
     }
 }

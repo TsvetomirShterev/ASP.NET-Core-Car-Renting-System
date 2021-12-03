@@ -12,7 +12,7 @@
         {
             this.CreateMap<CarDetailsServiceModel, CarFormModel>();
 
-            this.CreateMap<Car, CarIndexViewModel>();
+            this.CreateMap<Car, LatestCarsServiceModel>();
 
             this.CreateMap<Car, CarDetailsServiceModel>()
                 .ForMember(c => c.UserId, cfg => cfg.MapFrom(c => c.Dealer.UserId));
