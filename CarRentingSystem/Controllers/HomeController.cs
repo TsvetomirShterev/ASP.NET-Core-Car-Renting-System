@@ -23,7 +23,7 @@
         {
             const string latestCarsCacheKey = "LatestCarsCacheKey";
 
-            var latestCars = this.cache.Get<List<LatestCarsServiceModel>>(latestCarsCacheKey);
+            var latestCars = this.cache.Get<List<LatestCarServiceModel>>(latestCarsCacheKey);
 
             if (latestCars == null)
             {

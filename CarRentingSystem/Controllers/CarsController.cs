@@ -9,6 +9,8 @@
     using CarRentingSystem.Services.Cars;
     using CarRentingSystem.Services.Dealers;
 
+    using static WebConstants;
+
     public class CarsController : Controller
     {
         private readonly ICarService cars;
@@ -49,6 +51,19 @@
             var myCars = this.cars.ByUser(this.User.Id());
 
             return View(myCars);
+        }
+
+
+        public IActionResult Details(int id, string information)
+        {
+            var car = this.cars.Details(id);
+
+            if (information != car.GetInformation())
+            {
+                return BadRequest();
+            }
+
+            return View(car);
         }
 
 
@@ -98,6 +113,8 @@
                 car.CategoryId,
                 dealerId);
 
+            TempData[GlobalMessageKey] = "Your car was saved successfully!";
+
             return RedirectToAction(nameof(All));
         }
 
@@ -130,7 +147,7 @@
         public IActionResult Edit(int id, CarFormModel car)
         {
             var dealerId = this.dealers.IdByUser(this.User.Id());
-             
+
             if (dealerId == 0 && !User.IsAdmin())
             {
                 return RedirectToAction(nameof(DealersController.Become), "Dealers");
@@ -164,6 +181,7 @@
                   car.Year,
                   car.CategoryId);
 
+            TempData[GlobalMessageKey] = "Your car was edited successfully!";
 
             return RedirectToAction(nameof(All));
         }

@@ -11,6 +11,7 @@
     using Xunit;
     using System.Collections.Generic;
     using FluentAssertions;
+    using CarRentingSystem.Services.Cars.Models;
 
     public class HomeControllerTest
     {
@@ -24,8 +25,8 @@
                     .WithData(GetCars()))
                 .ShouldReturn()
                 .View(view => view
-                    .WithModelOfType<IndexViewModel>()
-                    .Passing(m => m.Cars.Should().HaveCount(3)));
+                    .WithModelOfType<List<LatestCarServiceModel>>()
+                    .Passing(m => m.Should().HaveCount(3)));
 
         [Fact]
         public void IndexShouldReturnViewWithCorrectModel()
@@ -43,7 +44,7 @@
             var carService = new CarService(data, mapper);
             var statisticsService = new StatisticsService(data);
 
-            var homeController = new HomeController(carService, statisticsService);
+            var homeController = new HomeController(carService,);
 
             //Act
             var result = homeController.Index();
@@ -55,11 +56,9 @@
 
             var model = viewResult.Model;
 
-            var indexViewModel = Assert.IsType<IndexViewModel>(model);
+            var indexViewModel = Assert.IsType<List<LatestCarServiceModel>>(model);
 
-            Assert.Equal(3, indexViewModel.Cars.Count);
-            Assert.Equal(10, indexViewModel.TotalCars);
-            Assert.Equal(1, indexViewModel.TotalUsers);
+            Assert.Equal(3, indexViewModel.Count);
         }
 
 

@@ -68,11 +68,11 @@
             };
         }
 
-        public IEnumerable<LatestCarsServiceModel> Latest()
+        public IEnumerable<LatestCarServiceModel> Latest()
           => this.data
               .Cars
               .OrderByDescending(c => c.Id)
-              .ProjectTo<LatestCarsServiceModel>(this.mapper)
+              .ProjectTo<LatestCarServiceModel>(this.mapper)
               .Take(3)
               .ToList();
 
