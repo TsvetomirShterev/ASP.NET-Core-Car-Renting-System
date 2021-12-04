@@ -2,7 +2,7 @@ namespace CarRentingSystem
 {
     using CarRentingSystem.Data;
     using CarRentingSystem.Data.Models;
-    using CarRentingSystem.Infrastructure;
+    using CarRentingSystem.Infrastructure.Extentions;
     using CarRentingSystem.Services.Cars;
     using CarRentingSystem.Services.Dealers;
     using CarRentingSystem.Services.Statistics;

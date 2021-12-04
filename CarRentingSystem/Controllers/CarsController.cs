@@ -5,7 +5,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Authorization;
-    using CarRentingSystem.Infrastructure;
+    using CarRentingSystem.Infrastructure.Extentions;
     using CarRentingSystem.Services.Cars;
     using CarRentingSystem.Services.Dealers;
 
@@ -105,17 +105,17 @@
                 return View(car);
             }
 
-            this.cars.Create(car.Brand,
-                car.Model,
-                car.Description,
-                car.ImageUrl,
-                car.Year,
-                car.CategoryId,
-                dealerId);
+            var carId = this.cars.Create(car.Brand,
+                   car.Model,
+                   car.Description,
+                   car.ImageUrl,
+                   car.Year,
+                   car.CategoryId,
+                   dealerId);
 
-            TempData[GlobalMessageKey] = "Your car was saved successfully!";
+            TempData[GlobalMessageKey] = "Your car was saved successfully and awaiting for admin approval!";
 
-            return RedirectToAction(nameof(All));
+            return RedirectToAction(nameof(Details), new { id = carId, information = car.GetInformation() });
         }
 
         [Authorize]
@@ -179,11 +179,12 @@
                   car.Description,
                   car.ImageUrl,
                   car.Year,
-                  car.CategoryId);
+                  car.CategoryId,
+                  this.User.IsAdmin());
 
-            TempData[GlobalMessageKey] = "Your car was edited successfully!";
+            TempData[GlobalMessageKey] = $"Your car was edited successfully {(this.User.IsAdmin() ? string.Empty : "and awaiting for admin approval")}!";
 
-            return RedirectToAction(nameof(All));
+            return RedirectToAction(nameof(Details), new { id, information = car.GetInformation() });
         }
     }
 }

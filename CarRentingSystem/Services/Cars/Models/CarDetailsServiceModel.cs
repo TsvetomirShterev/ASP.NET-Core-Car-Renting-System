@@ -7,8 +7,6 @@
 
         public int CategoryId { get; init; }
 
-        public string CategoryName { get; init; }
-
         public int DealerId { get; init; }
 
         public string DealerName { get; init; }
